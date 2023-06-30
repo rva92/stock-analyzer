@@ -1,6 +1,6 @@
 import datetime as dt
 
-from dash import callback, Output, Input
+from dash import callback, Output, Input, html, dcc
 import pandas as pd
 import plotly.express as px
 import yfinance as yf
@@ -25,6 +25,8 @@ def update_stock_selection(stock_symbol: str):
         end=dt.datetime.now().strftime("%Y-%m-%d")
     ).reset_index()
 
+    data["Date"] = pd.to_datetime(data["Date"].dt.date)
+
     if data.empty:
         print("Could not extract data")
 
@@ -32,20 +34,43 @@ def update_stock_selection(stock_symbol: str):
 
 
 @callback_manager.callback(
-    Output("stock-price-chart", "figure"),
+    Output("right-column", "children"),
     Input("stock-data", "data"),
     Input("date-picker", "start_date"),
     Input("date-picker", "end_date"),
 )
 def update_graph(json_data, start_date, end_date):
+    if start_date is not None:
+        start_date_obj = dt.date.fromisoformat(start_date)
+
+    else:
+        start_date_obj = dt.date(2015, 1, 1)
+    
+    if end_date is not None:
+        end_date_obj = dt.date.fromisoformat(end_date)
+    else:
+        end_date_obj = dt.date.today()
+
+    start_date_str = str(start_date_obj)
+    end_date_str = str(end_date_obj)
+
     filtered_df = (
         pd.read_json(json_data, orient='split')
-        .filter(f"Date >= {start_date} & Date <= {end_date}" )
+        .query(f"(Date >= @start_date_str) & (Date <= @end_date_str)" )
     )
 
     if filtered_df.empty:
         return px.line()
 
-    fig = px.line(filtered_df, x="Date", y="close")
+    fig = px.line(filtered_df, x="Date", y="Close")
     
-    return fig
+    fig.layout = {"plot_bgcolor": "#282b38", "paper_bgcolor": "#282b38"}
+
+    return html.Div(
+        id="stock-price-chart-container",
+        children=dcc.Loading(
+            className="graph-wrapper",
+            children=dcc.Graph(id="stock-price-chart", figure=fig),
+            style={"display": "none"},
+        ),
+    )
