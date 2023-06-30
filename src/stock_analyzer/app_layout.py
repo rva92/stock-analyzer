@@ -3,6 +3,10 @@ from datetime import date
 from dash import dcc
 from dash import html
 
+import src.stock_analyzer.utils as utils
+
+sp_500_list = utils.scrape_sp500_constituents()
+
 banner_layout = html.Div(
     className="banner",
     children=[
@@ -39,7 +43,7 @@ left_column_body = html.Div(
                             style={"margin-left": "6px"},
                             children=dcc.Dropdown(
                                 id="stock-dropdown",
-                                options=["AAPL", "MSFT"],
+                                options=sp_500_list,
                                 value="AAPL"
                             )
                         ),
