@@ -2,12 +2,6 @@ import dash
 from src.stock_analyzer import app_layout
 from src.stock_analyzer.app_callbacks import callback_manager
 
-# TODO: Scrape sp500 index constituents
-# TODO: Set up data load
-# TODO: Integrate data with app
-# TODO: Fix data not showing error
-# TODO: Add gitignore 
-
 
 app = dash.Dash(
     __name__,
