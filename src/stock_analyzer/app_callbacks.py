@@ -1,3 +1,14 @@
+"""
+Only two call backs are defined which are:
+
+update_stock_selection:
+    When the user selects a new stock, the data is updated to represent that new selection. The data is stored in a dcc.Store item and thus embedded directly into the html.
+
+update_graph:
+    Currently one graph is updated with the new data, however the same callback is meant to dictate the update of all future added graphs as well.
+    The callback is triggered when 1) the data is changed which happends when the update_stock_selection callback is activated and 2) when the date range selection change.
+"""
+
 import datetime as dt
 
 from dash import callback, Output, Input, html, dcc

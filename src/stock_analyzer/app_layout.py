@@ -1,3 +1,7 @@
+"""
+The app layout is inspired by the dash example svm application:
+https://github.com/plotly/dash-sample-apps/blob/main/apps/dash-svm/
+"""
 from datetime import date
 
 from dash import dcc
@@ -98,8 +102,6 @@ body_layout = html.Div(
     ]
 )
 
-
-# Inspiration: https://github.com/plotly/dash-sample-apps/blob/main/apps/dash-svm/app.py
 layout = html.Div(
     children=[
         banner_layout,

@@ -14,6 +14,12 @@ class Callback:
 
 
 class CallbackManager:
+    """
+    Manages all callbacks made in a dash application allowing layout and callbacks to be separated into different files.
+
+    It is taken from S.Piechaczek answer here:
+    https://stackoverflow.com/questions/62102453/how-to-define-callbacks-in-separate-files-plotly-dash
+    """
     def __init__(self):
         self._callbacks = []
 
@@ -23,16 +29,23 @@ class CallbackManager:
         )
 
         def wrapper(func):
-            self._callbacks.append(Callback(func,
-                                            output,
-                                            inputs,
-                                            state,
-                                            {"prevent_initial_callback": prevent_initial_call}))
+            self._callbacks.append(
+                Callback(
+                    func,
+                    output,
+                    inputs,
+                    state,
+                    {"prevent_initial_callback": prevent_initial_call}
+                )
+            )
 
         return wrapper
 
     def attach_to_app(self, app):
         for callback in self._callbacks:
             app.callback(
-                callback.outputs, callback.inputs, callback.states, **callback.kwargs
+                callback.outputs,
+                callback.inputs,
+                callback.states,
+                **callback.kwargs
             )(callback.func)
